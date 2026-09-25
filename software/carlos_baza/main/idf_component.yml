@@ -1,0 +1,5 @@
+dependencies:
+  pid_ctrl: ^0.1.1
+  bdc_motor: ^0.1.0
+  micro-ros/micro_ros_espidf_component: "^22"
+  espressif/esp_hosted: ^2.0.0
