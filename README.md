@@ -44,7 +44,7 @@ Folder zawiera schematy elektroniczne, pliki 3D płytek oraz ich podgląd w form
 Zweryfikowane zamówienie w [JLCPCB](https://jlcpcb.com).
 
 - `carlos_v0.1` -- Pliki gerber dla głównego PCB
-- `slim_v0.1` -- Pliki gerber dla dokera baterii
+- `slim_v3.2` -- Pliki gerber dla dokera baterii
 
 ## `software/` -- Oprogramowanie ESP-IDF
 
