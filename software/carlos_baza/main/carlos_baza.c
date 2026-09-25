@@ -29,7 +29,7 @@
  * WSZYSTKIE WARTOŚCI OZNACZONE "-- DOPASOWAĆ" WYMAGAJĄ WERYFIKACJI
  * WZGLĘDEM RZECZYWISTEGO SPRZĘTU PRZED URUCHOMIENIEM.
  */
-
+#include "sdkconfig.h"
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -129,10 +129,10 @@ typedef struct {
 } wheel_pin_config_t;
 
 static const wheel_pin_config_t wheel_pins[WHEEL_COUNT] = {
-    [WHEEL_FL] = { .pwm_in1_gpio = 5,  .pwm_in2_gpio = 20, .mcpwm_group_id = 0 },
-    [WHEEL_FR] = { .pwm_in1_gpio = 32, .pwm_in2_gpio = 33, .mcpwm_group_id = 0 },
-    [WHEEL_BL] = { .pwm_in1_gpio = 3,  .pwm_in2_gpio = 4,  .mcpwm_group_id = 1 },
-    [WHEEL_BR] = { .pwm_in1_gpio = 1,  .pwm_in2_gpio = 2,  .mcpwm_group_id = 1 },
+    [WHEEL_FL] = { .pwm_in1_gpio = CONFIG_WHEEL_FL_IN1_GPIO, .pwm_in2_gpio = CONFIG_WHEEL_FL_IN2_GPIO, .mcpwm_group_id = CONFIG_WHEEL_FL_MCPWM_GROUP },
+    [WHEEL_FR] = { .pwm_in1_gpio = CONFIG_WHEEL_FR_IN1_GPIO, .pwm_in2_gpio = CONFIG_WHEEL_FR_IN2_GPIO, .mcpwm_group_id = CONFIG_WHEEL_FR_MCPWM_GROUP },
+    [WHEEL_BL] = { .pwm_in1_gpio = CONFIG_WHEEL_BL_IN1_GPIO, .pwm_in2_gpio = CONFIG_WHEEL_BL_IN2_GPIO, .mcpwm_group_id = CONFIG_WHEEL_BL_MCPWM_GROUP },
+    [WHEEL_BR] = { .pwm_in1_gpio = CONFIG_WHEEL_BR_IN1_GPIO, .pwm_in2_gpio = CONFIG_WHEEL_BR_IN2_GPIO, .mcpwm_group_id = CONFIG_WHEEL_BR_MCPWM_GROUP },
 };
 
 typedef struct {
