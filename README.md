@@ -44,7 +44,7 @@ Folder zawiera schematy elektroniczne, pliki 3D płytek oraz ich podgląd w form
 Zweryfikowane zamówienie w [JLCPCB](https://jlcpcb.com).
 
 - `carlos_v0.1` -- Pliki gerber dla głównego PCB
-- `slim_v3.2` -- Pliki gerber dla dokera baterii
+- `slim_v0.1` -- Pliki gerber dla dokera baterii
 
 ## `software/` -- Oprogramowanie ESP-IDF
 
@@ -55,6 +55,33 @@ Zweryfikowane zamówienie w [JLCPCB](https://jlcpcb.com).
 - `main/idf_component.yml` -- deklaracja zależności projektu, w tym komponentu `micro_ros_espidf_component`
 - `main/robot_main.c` -- kod źródłowy realizujący obsługę odbiornika RC (protokół CRSF), kinematykę odwrotną napędu mecanum, sterowanie silnikami (PWM) oraz integrację z systemem micro-ROS
 
+### Wymagania
+
+- ESP-IDF v5.5 z toolchainem dla ESP32-P4
+- Linux lub WSL (Ubuntu)
+
+Pakiety systemowe (kompilator hosta, potrzebny do zbudowania narzędzi micro-ROS):
+
+```bash
+sudo apt update
+sudo apt install build-essential git
+```
+
+Pakiety Pythona dla micro-ROS (colcon i zależności), instalowane w środowisku Pythona ESP-IDF:
+
+```bash
+. $IDF_PATH/export.sh
+python -m pip install catkin_pkg lark-parser colcon-common-extensions empy==3.3.4
+```
+
+> Wersja `empy==3.3.4` jest wymagana -- nowsze wersje (4.x) nie są kompatybilne z budowaniem micro-ROS.
+
+Weryfikacja instalacji:
+
+```bash
+python -c "import catkin_pkg, lark, em, colcon_core; print('OK')"
+```
+
 ### Budowanie projektu
 
 ```bash
@@ -62,4 +89,15 @@ cd software
 idf.py set-target esp32p4
 idf.py menuconfig   # konfiguracja WiFi oraz adresu agenta micro-ROS
 idf.py build flash monitor
+```
+
+Pierwsze budowanie trwa kilka minut -- komponent micro-ROS jest pobierany automatycznie do `managed_components/` i kompilowany jako biblioteka `libmicroros.a`. Kolejne buildy korzystają z gotowej biblioteki.
+
+> Główny `CMakeLists.txt` zawiera poprawkę zmiennej `PATH`, która usuwa z niej katalogi z asemblerami toolchainów ESP. Bez niej systemowy `gcc` używany przez micro-ROS wybierałby niewłaściwy asembler (`as: unrecognized option '--64'`).
+
+W razie ponownego budowania micro-ROS od zera:
+
+```bash
+rm -rf build managed_components/micro-ros__micro_ros_espidf_component/micro_ros_dev managed_components/micro-ros__micro_ros_espidf_component/micro_ros_src
+idf.py build
 ```
