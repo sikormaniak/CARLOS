@@ -49,11 +49,29 @@ Zweryfikowane zamówienie w [JLCPCB](https://jlcpcb.com).
 ## `software/` -- Oprogramowanie ESP-IDF
 
 - `CMakeLists.txt` -- główny plik konfiguracyjny projektu
-- `sdkconfig.defaults` -- domyślna konfiguracja projektu (docelowy mikrokontroler, dane sieci WiFi, adres i port agenta micro-ROS)
+- `sdkconfig.defaults` -- domyślna konfiguracja projektu (docelowy mikrokontroler, dane sieci WiFi, adres i port agenta micro-ROS, przypisanie pinów silników)
 - `partitions.csv` -- niestandardowa tabela partycji pamięci flash
 - `main/CMakeLists.txt` -- plik konfiguracyjny komponentu głównego
+- `main/Kconfig.projbuild` -- definicja opcji konfiguracyjnych projektu dostępnych w `menuconfig` (piny GPIO oraz grupy MCPWM dla czterech silników)
 - `main/idf_component.yml` -- deklaracja zależności projektu, w tym komponentu `micro_ros_espidf_component`
 - `main/robot_main.c` -- kod źródłowy realizujący obsługę odbiornika RC (protokół CRSF), kinematykę odwrotną napędu mecanum, sterowanie silnikami (PWM) oraz integrację z systemem micro-ROS
+
+### Konfiguracja pinów silników
+
+Przypisanie pinów nie jest zapisane na stałe w kodzie -- definiuje je `main/Kconfig.projbuild`, a wartości trafiają do `sdkconfig` jako makra `CONFIG_WHEEL_*`. Zmiana pinów nie wymaga edycji kodu źródłowego:
+
+```bash
+idf.py menuconfig   # menu: CARLOS - piny silników
+```
+
+| Koło | IN1 | IN2 | Grupa MCPWM |
+|------|-----|-----|-------------|
+| Przednie lewe (FL) | GPIO 5  | GPIO 20 | 0 |
+| Przednie prawe (FR) | GPIO 32 | GPIO 33 | 0 |
+| Tylne lewe (BL) | GPIO 3  | GPIO 4  | 1 |
+| Tylne prawe (BR) | GPIO 1  | GPIO 2  | 1 |
+
+> Zmiany w `sdkconfig.defaults` są uwzględniane dopiero po usunięciu pliku `sdkconfig` lub wykonaniu `idf.py fullclean`.
 
 ### Wymagania
 
@@ -87,7 +105,7 @@ python -c "import catkin_pkg, lark, em, colcon_core; print('OK')"
 ```bash
 cd software
 idf.py set-target esp32p4
-idf.py menuconfig   # konfiguracja WiFi oraz adresu agenta micro-ROS
+idf.py menuconfig   # konfiguracja WiFi, adresu agenta micro-ROS oraz pinów silników
 idf.py build flash monitor
 ```
 
